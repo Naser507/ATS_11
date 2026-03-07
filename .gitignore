@@ -1,0 +1,31 @@
+# Build folders
+build/
+dist/
+
+# Compiled binaries
+*.o
+*.obj
+*.exe
+*.out
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+
+# Logs
+*.log
+
+# IDE / Editor
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Libraries (if rebuildable)
+lib/wxWidgets/
+lib/other_libs/
+
+# Environment / secrets
+config/*.env
