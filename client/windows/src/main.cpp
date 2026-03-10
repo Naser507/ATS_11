@@ -1,26 +1,41 @@
 #include <wx/wx.h>
 
-// Define a new application class
-class MyApp : public wxApp
-{
+class CounterFrame : public wxFrame {
 public:
-    virtual bool OnInit();
+    CounterFrame() : wxFrame(nullptr, wxID_ANY, "Counter App", wxDefaultPosition, wxSize(250, 150)), count(0) {
+        wxPanel* panel = new wxPanel(this);
+
+        countLabel = new wxStaticText(panel, wxID_ANY, "Count: 0", wxPoint(90, 20));
+
+        wxButton* incBtn = new wxButton(panel, wxID_ANY, "Increment", wxPoint(30, 60));
+        wxButton* resetBtn = new wxButton(panel, wxID_ANY, "Reset", wxPoint(140, 60));
+
+        incBtn->Bind(wxEVT_BUTTON, &CounterFrame::OnIncrement, this);
+        resetBtn->Bind(wxEVT_BUTTON, &CounterFrame::OnReset, this);
+    }
+
+private:
+    int count;
+    wxStaticText* countLabel;
+
+    void OnIncrement(wxCommandEvent&) {
+        count++;
+        countLabel->SetLabel(wxString::Format("Count: %d", count));
+    }
+
+    void OnReset(wxCommandEvent&) {
+        count = 0;
+        countLabel->SetLabel("Count: 0");
+    }
 };
 
-// Define a new frame (window)
-class MyFrame : public wxFrame
-{
+class CounterApp : public wxApp {
 public:
-    MyFrame() : wxFrame(NULL, wxID_ANY, "Hello ATS_11") {}
+    bool OnInit() override {
+        CounterFrame* frame = new CounterFrame();
+        frame->Show(true);
+        return true;
+    }
 };
 
-// Implement the application
-bool MyApp::OnInit()
-{
-    MyFrame* frame = new MyFrame();
-    frame->Show(true);
-    return true;
-}
-
-// Start the application
-wxIMPLEMENT_APP(MyApp);
+wxIMPLEMENT_APP(CounterApp);
