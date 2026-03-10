@@ -28,4 +28,10 @@ lib/wxWidgets/
 lib/other_libs/
 
 # Environment / secrets
-config/*.env
+config/*.env 
+
+# Ignore large or temporary reference files
+notes/*.log
+notes/*.tmp
+
+Release_beta/
