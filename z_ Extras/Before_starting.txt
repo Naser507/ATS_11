@@ -1,0 +1,35 @@
+===========================================================
+ATS_11 WORKBENCH: PROJECT TEMPLATE GUIDE
+===========================================================
+
+Welcome to the ATS_11 Workbench. This environment is designed 
+as a pre-configured boilerplate to jumpstart C++ development 
+using wxWidgets and cross-platform build scripts.
+
+1. DIRECTORY STRUCTURE OVERVIEW:
+   - /client & /server: Primary source code locations.
+   - /include & /lib: External dependencies and headers.
+   - /scripts: Automation for building, testing, and git.
+   - /Release_beta: Automated staging area for deployments.
+
+2. INITIAL SETUP (MANDATORY):
+   Before running build scripts, you MUST update your local 
+   paths. The workbench is currently configured for:
+   ~/projects_series/ATS_11
+
+   If your path differs, update the variables in:
+   - /scripts/build.sh
+   - /scripts/full_delivery.sh
+
+3. DEPENDENCY CONFIGURATION:
+   The /lib/wxWidgets folder is a placeholder. You must 
+   link your specific installation of wxWidgets here or 
+   point your compiler to the correct system path.
+
+4. HOW TO USE:
+   Simply extract this archive into your desired projects 
+   folder, rename the root directory if necessary, and 
+   initialize your own Git repository.
+
+Happy Coding.
+===========================================================

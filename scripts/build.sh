@@ -3,6 +3,19 @@
 # Modernized Build & Package Script for ATS_11
 # ===============================================
 
+# --- 0. PROGRAM NAME SELECTION ---
+DEFAULT_NAME="ATS_11"
+
+read -p "Use default project name (ATS_11)? (Y/n): " USE_DEFAULT
+
+if [[ "$USE_DEFAULT" =~ ^[Nn]$ ]]; then
+    read -p "Enter custom project name: " APP_NAME
+else
+    APP_NAME="$DEFAULT_NAME"
+fi
+
+echo "Project name set to: $APP_NAME"
+
 # --- 1. CONFIGURATION ---
 PROJECT_ROOT="$HOME/projects_series/ATS_11"
 WX_ROOT="$HOME/Libraries/wxWidgets-3.2.6"
@@ -10,9 +23,9 @@ MINGW_DLL_PATH="/usr/lib/gcc/x86_64-w64-mingw32/13-posix"
 
 # Output Mapping
 BUILD_DIR="$PROJECT_ROOT/build/client/release"
-RELEASE_DIR="$PROJECT_ROOT/Release_beta/ATS_11"
+RELEASE_DIR="$PROJECT_ROOT/Release_beta/$APP_NAME"
 BIN_DEST="$RELEASE_DIR/bin"
-TARGET_EXE="$BUILD_DIR/ATS_11.exe"
+TARGET_EXE="$BUILD_DIR/$APP_NAME.exe"
 
 # wxWidgets specific include paths (Verified from your find command)
 WX_INC_BASE="$WX_ROOT/include"
@@ -25,7 +38,7 @@ rm -rf "$RELEASE_DIR"
 mkdir -p "$BIN_DEST" "$RELEASE_DIR/assets" "$(dirname "$TARGET_EXE")"
 
 # --- 3. COMPILATION ---
-echo "--- Compiling ATS_11 ---"
+echo "--- Compiling $APP_NAME ---"
 
 # These are the extra helper libs usually required for a static wxMSW build
 WX_STATIC_LIBS="-lwx_mswu_core-3.2-x86_64-w64-mingw32 \
@@ -56,11 +69,10 @@ cp -r "$PROJECT_ROOT/assets/"* "$RELEASE_DIR/assets/"
 
 # --- 5. AUTOMATIC DLL RESOLUTION ---
 echo "--- Collecting Dependencies ---"
-# We scan the EXE for DLLs and copy them from our verified MinGW path
+
 NEEDED_DLLS=$(x86_64-w64-mingw32-objdump -p "$TARGET_EXE" | grep "DLL Name" | sed 's/.*DLL Name: //')
 
 for dll in $NEEDED_DLLS; do
-    # Only copy non-system Windows DLLs (standard library runtimes)
     if [[ "$dll" == lib* ]]; then
         if [ -f "$MINGW_DLL_PATH/$dll" ]; then
             echo "Packaging: $dll"
@@ -71,9 +83,9 @@ done
 
 # --- 6. FINAL PACKAGING ---
 echo "--- Creating Release Zip ---"
-cd "$PROJECT_ROOT/Release_beta" && zip -r "ATS_11_Release_beta.zip" "ATS_11" > /dev/null
+cd "$PROJECT_ROOT/Release_beta" && zip -r "${APP_NAME}_Release_beta.zip" "$APP_NAME" > /dev/null
 
-echo "Success! Release ready at: $PROJECT_ROOT/Release_beta/ATS_11_Release_beta.zip"
+echo "Success! Release ready at: $PROJECT_ROOT/Release_beta/${APP_NAME}_Release_beta.zip"
 
 # ==============================================================================
 # 🛠️ THE ARCHITECT'S LOG: HOW ATS_11 BUILDS (AND WHY IT STOPPED CRASHING) 🛠️
@@ -151,5 +163,71 @@ echo "Success! Release ready at: $PROJECT_ROOT/Release_beta/ATS_11_Release_beta.
 # -static-libgcc / -static-libstdc++ : Packs the C++ "brain" into the .exe.
 # -O2 : Optimizes the code so the Audio Transformer Suite runs faster.
 # -D__WXMSW__ : Tells the code "Hey, we are building for Windows!"
+#
+# ==============================================================================
+
+# ==============================================================================
+# 🔧 UPDATE LOG: INTERACTIVE BUILD NAME SELECTION
+# ==============================================================================
+#
+# WHAT WAS ADDED:
+# ------------------------------------------------------
+# A small interactive prompt was introduced at the beginning of the script.
+# This allows the user to decide whether the build should use the default
+# application name ("ATS_11") or a custom name entered at runtime.
+#
+# The selected name is stored in the variable:
+#
+#     APP_NAME
+#
+# This variable is now used consistently throughout the script to define:
+#
+#   - The output executable name
+#       ($APP_NAME.exe)
+#
+#   - The release folder name
+#       Release_beta/$APP_NAME
+#
+#   - The final release archive
+#       ${APP_NAME}_Release_beta.zip
+#
+# WHY THIS WAS ADDED:
+# ------------------------------------------------------
+# During development it is often useful to generate different builds of the
+# same codebase (for example demos, experiments, or testing utilities) without
+# modifying the script each time.
+#
+# This feature allows quick builds such as:
+#
+#   ATS_11
+#   ATS_11_demo
+#   ATS_11_network_test
+#   ATS_11_audio_prototype
+#
+# while keeping the build pipeline identical.
+#
+# DESIGN PHILOSOPHY:
+# ------------------------------------------------------
+# The goal is to keep the build system flexible while preserving the default
+# identity of the project ("ATS_11"). If no custom name is provided, the script
+# behaves exactly as it did before this change.
+#
+# FUTURE MAINTENANCE NOTICE:
+# ------------------------------------------------------
+# As the ATS_11 project grows, additional improvements to this build script
+# may become necessary. Possible future updates may include:
+#
+#   - Automatic detection and compilation of multiple source files
+#   - Support for multiple build targets (client/server/tools)
+#   - Version number injection into the executable
+#   - Cross-platform packaging improvements
+#   - More advanced dependency management
+#
+# The current script represents a stable and functional foundation, but it
+# should be considered a living component of the project that may evolve as
+# the architecture and requirements of ATS_11 expand.
+#
+# In other words: this pipeline works well today, but future contributors
+# should not hesitate to refine it when the project grows in complexity.
 #
 # ==============================================================================
