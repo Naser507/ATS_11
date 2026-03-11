@@ -23,4 +23,7 @@ curl -L https://github.com/Naser507/ATS_11/raw/master/z_%20Extras/Workbench_Temp
 2. **Paths**: Update the directory paths in `scripts/build.sh` to match your local machine.
 3. **Libraries**: Link your local `wxWidgets` installation in the `/lib` folder.
 
-For more details, see: `z_ Extras/Before_starting.txt`
+For more details, see: `z_ Extras/Before_starting.txt` 
+
+SOME PROBLEMS : The issue seem to be not the functional part of the pipeline, but the naming, if I name it something else other than the default name, it will compile the previous source code, but if I keep the default name, it correctly compiles the currenct source code. this needs some deeper investigation. 
+
